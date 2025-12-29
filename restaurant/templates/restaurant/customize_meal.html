@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Personnaliser {{ special_meal.name }} - Grillade Ilyes{% endblock %}
+
+{% block content %}
+<section class="bg-black min-h-screen py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <a href="{% url 'restaurant:order' %}" class="text-yellow-500 hover:text-yellow-400 inline-flex items-center mb-4">
+                <i class="fas fa-arrow-left mr-2"></i>Retour à la commande
+            </a>
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="md:w-1/3">
+                    <img src="{{ special_meal.image.url }}" alt="{{ special_meal.name }}" class="w-full rounded-2xl shadow-2xl">
+                </div>
+                <div class="md:w-2/3">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">{{ special_meal.name }}</h1>
+                    <p class="text-gray-300 text-lg mb-6">{{ special_meal.description }}</p>
+                    <div class="bg-gray-900 rounded-xl p-6 inline-block">
+                        <p class="text-gray-400 text-sm mb-1">Prix de base</p>
+                        <p class="text-yellow-500 text-3xl font-bold">{{ special_meal.base_price|floatformat:0 }} DA</p>
+                        <p class="text-gray-500 text-sm mt-2">+ Prix des ingrédients supplémentaires</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customization Form -->
+        <form id="customize-form" class="bg-gray-900 rounded-2xl p-8 border border-gray-800">
+            <h2 class="text-2xl font-bold text-white mb-6 border-b border-gray-800 pb-4">
+                <i class="fas fa-magic text-yellow-500 mr-3"></i>Personnalisez votre repas
+            </h2>
+
+            <!-- Ingredients by Category -->
+            {% for ing_category in ingredient_categories %}
+            {% with ingredients=ing_category.ingredient_set.all %}
+            {% if ingredients %}
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-yellow-500 mb-4 flex items-center">
+                    <span class="bg-yellow-500/20 px-4 py-2 rounded-lg">{{ ing_category.name }}</span>
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {% for ingredient in ingredients %}
+                    {% if ingredient.id in available_ingredient_ids %}
+                    <div class="bg-gray-800 rounded-lg p-4 border border-gray-700 hover:border-yellow-500 transition">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                {% if ingredient.image %}
+                                <img src="{{ ingredient.image.url }}" alt="{{ ingredient.name }}" class="w-12 h-12 rounded-lg object-cover">
+                                {% else %}
+                                <div class="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-utensils text-gray-500"></i>
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <label class="text-white font-semibold block">{{ ingredient.name }}</label>
+                                    {% if ingredient.price > 0 %}
+                                    <span class="text-yellow-500 text-sm">+{{ ingredient.price|floatformat:0 }} DA</span>
+                                    {% else %}
+                                    <span class="text-green-500 text-sm">Inclus</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <input type="checkbox" 
+                                   class="ingredient-checkbox w-5 h-5 text-yellow-500 rounded focus:ring-yellow-500" 
+                                   data-id="{{ ingredient.id }}" 
+                                   data-price="{{ ingredient.price }}"
+                                   data-name="{{ ingredient.name }}"
+                                   {% if ingredient in default_ingredients %}checked{% endif %}>
+                        </div>
+                        <div class="flex items-center gap-2 mt-2">
+                            <button type="button" onclick="decreaseQuantity({{ ingredient.id }})" class="bg-gray-700 text-white w-8 h-8 rounded-lg hover:bg-gray-600 transition">-</button>
+                            <input type="number" 
+                                   id="quantity-{{ ingredient.id }}" 
+                                   min="1" 
+                                   max="5" 
+                                   value="1" 
+                                   class="w-16 text-center bg-gray-700 text-white rounded-lg py-1 focus:ring-2 focus:ring-yellow-500">
+                            <button type="button" onclick="increaseQuantity({{ ingredient.id }})" class="bg-gray-700 text-white w-8 h-8 rounded-lg hover:bg-gray-600 transition">+</button>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            {% endwith %}
+            {% endfor %}
+
+            <!-- Additional Notes -->
+            <div class="mb-6">
+                <label class="text-white font-semibold mb-2 block">
+                    <i class="fas fa-comment mr-2 text-yellow-500"></i>Notes supplémentaires (optionnel)
+                </label>
+                <textarea id="meal-notes" rows="3" class="w-full bg-gray-800 text-white rounded-lg p-4 border border-gray-700 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500" placeholder="Ex: Sans oignons, bien cuit, etc."></textarea>
+            </div>
+
+            <!-- Quantity Selector -->
+            <div class="mb-6">
+                <label class="text-white font-semibold mb-2 block">
+                    <i class="fas fa-shopping-basket mr-2 text-yellow-500"></i>Quantité
+                </label>
+                <div class="flex items-center gap-4">
+                    <button type="button" onclick="decreaseMealQuantity()" class="bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition text-xl">-</button>
+                    <input type="number" id="meal-quantity" min="1" value="1" class="w-20 text-center bg-gray-800 text-white rounded-lg py-3 text-xl font-bold focus:ring-2 focus:ring-yellow-500">
+                    <button type="button" onclick="increaseMealQuantity()" class="bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition text-xl">+</button>
+                </div>
+            </div>
+
+            <!-- Price Summary -->
+            <div class="bg-black rounded-xl p-6 mb-6 border-2 border-yellow-500">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-gray-300">Prix de base:</span>
+                    <span class="text-white font-semibold"><span id="base-price">{{ special_meal.base_price|floatformat:0 }}</span> DA</span>
+                </div>
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-gray-300">Ingrédients supplémentaires:</span>
+                    <span class="text-white font-semibold">+<span id="extras-price">0</span> DA</span>
+                </div>
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-gray-300">Quantité:</span>
+                    <span class="text-white font-semibold">x<span id="display-quantity">1</span></span>
+                </div>
+                <div class="border-t border-gray-800 pt-3 mt-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-white text-xl font-bold">Total:</span>
+                        <span class="text-yellow-500 text-3xl font-bold"><span id="total-price">{{ special_meal.base_price|floatformat:0 }}</span> DA</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full bg-yellow-500 text-black py-4 rounded-xl text-lg font-bold hover:bg-yellow-400 transition shadow-lg hover:shadow-yellow-500/50">
+                <i class="fas fa-shopping-cart mr-3"></i>Ajouter au Panier
+            </button>
+        </form>
+    </div>
+</section>
+
+<script>
+const basePrice = {{ special_meal.base_price }};
+
+function increaseQuantity(ingredientId) {
+    const input = document.getElementById(`quantity-${ingredientId}`);
+    if (parseInt(input.value) < parseInt(input.max)) {
+        input.value = parseInt(input.value) + 1;
+        updateTotal();
+    }
+}
+
+function decreaseQuantity(ingredientId) {
+    const input = document.getElementById(`quantity-${ingredientId}`);
+    if (parseInt(input.value) > 1) {
+        input.value = parseInt(input.value) - 1;
+        updateTotal();
+    }
+}
+
+function increaseMealQuantity() {
+    const input = document.getElementById('meal-quantity');
+    input.value = parseInt(input.value) + 1;
+    updateTotal();
+}
+
+function decreaseMealQuantity() {
+    const input = document.getElementById('meal-quantity');
+    if (parseInt(input.value) > 1) {
+        input.value = parseInt(input.value) - 1;
+        updateTotal();
+    }
+}
+
+function updateTotal() {
+    let extrasPrice = 0;
+    const checkboxes = document.querySelectorAll('.ingredient-checkbox:checked');
+    
+    checkboxes.forEach(checkbox => {
+        const ingredientId = checkbox.dataset.id;
+        const price = parseFloat(checkbox.dataset.price);
+        const quantity = parseInt(document.getElementById(`quantity-${ingredientId}`).value);
+        extrasPrice += price * quantity;
+    });
+    
+    const mealQuantity = parseInt(document.getElementById('meal-quantity').value);
+    const total = (basePrice + extrasPrice) * mealQuantity;
+    
+    document.getElementById('extras-price').textContent = Math.round(extrasPrice);
+    document.getElementById('display-quantity').textContent = mealQuantity;
+    document.getElementById('total-price').textContent = Math.round(total);
+}
+
+// Update total when checkboxes change
+document.querySelectorAll('.ingredient-checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', updateTotal);
+});
+
+// Form submission
+document.getElementById('customize-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const ingredients = [];
+    const checkboxes = document.querySelectorAll('.ingredient-checkbox:checked');
+    
+    checkboxes.forEach(checkbox => {
+        const ingredientId = checkbox.dataset.id;
+        const quantity = parseInt(document.getElementById(`quantity-${ingredientId}`).value);
+        ingredients.push({
+            id: ingredientId,
+            quantity: quantity
+        });
+    });
+    
+    const data = {
+        meal_id: {{ special_meal.id }},
+        quantity: parseInt(document.getElementById('meal-quantity').value),
+        ingredients: ingredients,
+        notes: document.getElementById('meal-notes').value
+    };
+    
+    fetch("{% url 'restaurant:add_special_meal' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            window.location.href = "{% url 'restaurant:order' %}";
+        } else {
+            alert('Erreur: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('Erreur lors de l\'ajout au panier');
+    });
+});
+</script>
+{% endblock %}

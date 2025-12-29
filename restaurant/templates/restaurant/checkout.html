@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Finaliser la Commande - Grillade Ilyes{% endblock %}
+
+{% block content %}
+<section class="bg-black min-h-screen py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <a href="{% url 'restaurant:cart' %}" class="text-yellow-500 hover:text-yellow-400 inline-flex items-center mb-4">
+                <i class="fas fa-arrow-left mr-2"></i>Retour au panier
+            </a>
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">
+                <i class="fas fa-credit-card text-yellow-500 mr-4"></i>Finaliser la Commande
+            </h1>
+            <p class="text-gray-400">Complétez vos informations pour passer votre commande</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Customer Information Form -->
+            <div class="lg:col-span-2">
+                <form id="checkout-form" class="bg-gray-900 rounded-2xl p-8 border border-gray-800">
+                    <h2 class="text-2xl font-bold text-white mb-6 border-b border-gray-800 pb-4">
+                        <i class="fas fa-user text-yellow-500 mr-3"></i>Vos Informations
+                    </h2>
+
+                    <!-- Phone (Required) -->
+                    <div class="mb-6">
+                        <label class="text-white font-semibold mb-2 block">
+                            Numéro de téléphone <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fas fa-phone absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="tel" 
+                                   id="phone" 
+                                   name="phone" 
+                                   required 
+                                   placeholder="Ex: 0694688889"
+                                   class="w-full bg-gray-800 text-white rounded-lg pl-12 pr-4 py-4 border border-gray-700 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500">
+                        </div>
+                        <p class="text-gray-500 text-sm mt-2">Nous vous appellerons pour confirmer votre commande</p>
+                    </div>
+
+                    <!-- Name (Optional) -->
+                    <div class="mb-6">
+                        <label class="text-white font-semibold mb-2 block">
+                            Nom complet <span class="text-gray-500">(optionnel)</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fas fa-user absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" 
+                                   id="name" 
+                                   name="name" 
+                                   placeholder="Ex: Ahmed Mechaoui"
+                                   class="w-full bg-gray-800 text-white rounded-lg pl-12 pr-4 py-4 border border-gray-700 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500">
+                        </div>
+                    </div>
+
+                    <!-- Address (Optional) -->
+                    <div class="mb-6">
+                        <label class="text-white font-semibold mb-2 block">
+                            Adresse de livraison <span class="text-gray-500">(optionnel)</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fas fa-map-marker-alt absolute left-4 top-4 text-gray-400"></i>
+                            <textarea id="address" 
+                                      name="address" 
+                                      rows="3" 
+                                      placeholder="Ex: 15 Rue Didouche Mourad, Alger"
+                                      class="w-full bg-gray-800 text-white rounded-lg pl-12 pr-4 py-4 border border-gray-700 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500"></textarea>
+                        </div>
+                        <p class="text-gray-500 text-sm mt-2">Laissez vide pour une commande à emporter</p>
+                    </div>
+
+                    <!-- Additional Notes -->
+                    <div class="mb-6">
+                        <label class="text-white font-semibold mb-2 block">
+                            <i class="fas fa-comment mr-2 text-yellow-500"></i>Notes supplémentaires <span class="text-gray-500">(optionnel)</span>
+                        </label>
+                        <textarea id="notes" 
+                                  name="notes" 
+                                  rows="4" 
+                                  placeholder="Ex: Livraison après 19h, sonnette ne fonctionne pas..."
+                                  class="w-full bg-gray-800 text-white rounded-lg p-4 border border-gray-700 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500"></textarea>
+                    </div>
+
+                    <!-- Payment Method Info -->
+                    <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 mb-6">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-info-circle text-yellow-500 text-xl mt-1"></i>
+                            <div>
+                                <h3 class="text-yellow-500 font-bold mb-2">Mode de paiement</h3>
+                                <p class="text-gray-300 text-sm">
+                                    Le paiement se fait <strong>en espèces</strong> à la livraison ou lors du retrait de votre commande au restaurant.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" 
+                            class="w-full bg-yellow-500 text-black py-4 rounded-xl text-lg font-bold hover:bg-yellow-400 transition shadow-lg hover:shadow-yellow-500/50 flex items-center justify-center gap-3">
+                        <i class="fas fa-check-circle text-2xl"></i>
+                        <span>Confirmer la Commande</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Order Summary Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="bg-gray-900 rounded-2xl p-6 border-2 border-yellow-500 sticky top-24">
+                    <h2 class="text-2xl font-bold text-white mb-6">Votre Commande</h2>
+                    
+                    <!-- Items Summary -->
+                    <div class="mb-6 max-h-64 overflow-y-auto">
+                        {% for item in cart.cart_items.all %}
+                        <div class="flex justify-between items-center mb-3 text-sm">
+                            <span class="text-gray-300">{{ item.quantity }}x {{ item.product.name }}</span>
+                            <span class="text-white font-semibold">{{ item.total_price|floatformat:0 }} DA</span>
+                        </div>
+                        {% endfor %}
+                        
+                        {% for special in cart.cart_special_meals.all %}
+                        <div class="mb-3 pb-3 border-b border-gray-800">
+                            <div class="flex justify-between items-center text-sm mb-2">
+                                <span class="text-gray-300">{{ special.quantity }}x {{ special.special_meal.name }}</span>
+                                <span class="text-white font-semibold">{{ special.total_price|floatformat:0 }} DA</span>
+                            </div>
+                            <div class="flex flex-wrap gap-1">
+                                {% for ing in special.selected_ingredients.all %}
+                                <span class="bg-gray-800 text-yellow-500 px-2 py-1 rounded text-xs">
+                                    {{ ing.quantity }}x {{ ing.ingredient.name }}
+                                </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Price Breakdown -->
+                    <div class="border-t border-gray-800 pt-4 space-y-3">
+                        <div class="flex justify-between text-gray-300">
+                            <span>Sous-total:</span>
+                            <span>{{ cart_total|floatformat:0 }} DA</span>
+                        </div>
+                        <div class="flex justify-between text-gray-300">
+                            <span>Livraison:</span>
+                            <span class="text-green-500 font-semibold">Gratuite</span>
+                        </div>
+                        <div class="border-t border-gray-800 pt-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-white text-lg font-bold">Total:</span>
+                                <span class="text-yellow-500 text-3xl font-bold">{{ cart_total|floatformat:0 }} DA</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Info -->
+                    <div class="mt-6 pt-6 border-t border-gray-800">
+                        <p class="text-gray-400 text-sm mb-3">
+                            <i class="fas fa-question-circle text-yellow-500 mr-2"></i>
+                            Une question ?
+                        </p>
+                        <a href="tel:+213694688889" class="text-yellow-500 hover:text-yellow-400 font-semibold flex items-center gap-2">
+                            <i class="fas fa-phone"></i>
+                            0694 68 88 89
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.getElementById('checkout-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const phone = document.getElementById('phone').value.trim();
+    
+    if (!phone) {
+        alert('Veuillez entrer votre numéro de téléphone');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('phone', phone);
+    formData.append('name', document.getElementById('name').value.trim());
+    formData.append('address', document.getElementById('address').value.trim());
+    formData.append('notes', document.getElementById('notes').value.trim());
+    
+    // Disable submit button
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Traitement en cours...';
+    
+    fetch("{% url 'restaurant:place_order' %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = `/confirmation/${data.order_id}/`;
+        } else {
+            alert('Erreur: ' + data.message);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-check-circle text-2xl mr-2"></i><span>Confirmer la Commande</span>';
+        }
+    })
+    .catch(error => {
+        alert('Erreur lors de la commande. Veuillez réessayer.');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-check-circle text-2xl mr-2"></i><span>Confirmer la Commande</span>';
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Panier - Grillade Ilyes{% endblock %}
+
+{% block content %}
+<section class="bg-black min-h-screen py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <a href="{% url 'restaurant:order' %}" class="text-yellow-500 hover:text-yellow-400 inline-flex items-center mb-4">
+                <i class="fas fa-arrow-left mr-2"></i>Continuer mes achats
+            </a>
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">
+                <i class="fas fa-shopping-cart text-yellow-500 mr-4"></i>Mon Panier
+            </h1>
+            <p class="text-gray-400">Vérifiez votre commande avant de finaliser</p>
+        </div>
+
+        {% if not cart_items and not cart_special_meals %}
+        <!-- Empty Cart -->
+        <div class="bg-gray-900 rounded-2xl p-12 text-center border border-gray-800">
+            <div class="text-6xl mb-6">🛒</div>
+            <h2 class="text-2xl font-bold text-white mb-4">Votre panier est vide</h2>
+            <p class="text-gray-400 mb-8">Commencez à ajouter des produits pour créer votre commande</p>
+            <a href="{% url 'restaurant:order' %}" class="inline-block bg-yellow-500 text-black px-8 py-4 rounded-full font-bold hover:bg-yellow-400 transition">
+                <i class="fas fa-utensils mr-2"></i>Parcourir le Menu
+            </a>
+        </div>
+        {% else %}
+        <!-- Cart Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Cart Items -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Regular Products -->
+                {% if cart_items %}
+                <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800">
+                    <h2 class="text-2xl font-bold text-white mb-6 border-b border-gray-800 pb-4">
+                        <i class="fas fa-box text-yellow-500 mr-3"></i>Produits
+                    </h2>
+                    {% for item in cart_items %}
+                    <div class="flex gap-4 mb-6 last:mb-0 pb-6 last:pb-0 border-b border-gray-800 last:border-0">
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-24 h-24 rounded-lg object-cover">
+                        <div class="flex-1">
+                            <h3 class="text-lg font-bold text-white mb-1">{{ item.product.name }}</h3>
+                            <p class="text-gray-400 text-sm mb-3">{{ item.product.description|truncatewords:15 }}</p>
+                            <div class="flex items-center gap-4">
+                                <div class="flex items-center gap-2">
+                                    <button onclick="updateQuantity({{ item.id }}, 'product', parseInt(document.getElementById('qty-{{ item.id }}').value) - 1)" class="bg-gray-800 text-white w-8 h-8 rounded-lg hover:bg-gray-700">-</button>
+                                    <input type="number" id="qty-{{ item.id }}" value="{{ item.quantity }}" min="1" class="w-16 text-center bg-gray-800 text-white rounded-lg py-1" onchange="updateQuantity({{ item.id }}, 'product', this.value)">
+                                    <button onclick="updateQuantity({{ item.id }}, 'product', parseInt(document.getElementById('qty-{{ item.id }}').value) + 1)" class="bg-gray-800 text-white w-8 h-8 rounded-lg hover:bg-gray-700">+</button>
+                                </div>
+                                <span class="text-yellow-500 font-bold">{{ item.total_price|floatformat:0 }} DA</span>
+                                <button onclick="removeItem({{ item.id }}, 'product')" class="ml-auto text-red-500 hover:text-red-400 transition">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Special Meals -->
+                {% if cart_special_meals %}
+                <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800">
+                    <h2 class="text-2xl font-bold text-white mb-6 border-b border-gray-800 pb-4">
+                        <i class="fas fa-star text-yellow-500 mr-3"></i>Repas Personnalisés
+                    </h2>
+                    {% for special in cart_special_meals %}
+                    <div class="mb-6 last:mb-0 pb-6 last:pb-0 border-b border-gray-800 last:border-0">
+                        <div class="flex gap-4 mb-4">
+                            <img src="{{ special.special_meal.image.url }}" alt="{{ special.special_meal.name }}" class="w-24 h-24 rounded-lg object-cover">
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-white mb-2">{{ special.special_meal.name }}</h3>
+                                <div class="bg-gray-800 rounded-lg p-3 mb-3">
+                                    <p class="text-gray-400 text-sm font-semibold mb-2">Ingrédients sélectionnés:</p>
+                                    <div class="flex flex-wrap gap-2">
+                                        {% for ing in special.selected_ingredients.all %}
+                                        <span class="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded-full text-xs font-semibold">
+                                            {{ ing.quantity }}x {{ ing.ingredient.name }}
+                                        </span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% if special.notes %}
+                                <p class="text-gray-500 text-sm italic mb-3">
+                                    <i class="fas fa-comment mr-1"></i>{{ special.notes }}
+                                </p>
+                                {% endif %}
+                                <div class="flex items-center gap-4">
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="updateQuantity({{ special.id }}, 'special', parseInt(document.getElementById('qty-special-{{ special.id }}').value) - 1)" class="bg-gray-800 text-white w-8 h-8 rounded-lg hover:bg-gray-700">-</button>
+                                        <input type="number" id="qty-special-{{ special.id }}" value="{{ special.quantity }}" min="1" class="w-16 text-center bg-gray-800 text-white rounded-lg py-1" onchange="updateQuantity({{ special.id }}, 'special', this.value)">
+                                        <button onclick="updateQuantity({{ special.id }}, 'special', parseInt(document.getElementById('qty-special-{{ special.id }}').value) + 1)" class="bg-gray-800 text-white w-8 h-8 rounded-lg hover:bg-gray-700">+</button>
+                                    </div>
+                                    <span class="text-yellow-500 font-bold">{{ special.total_price|floatformat:0 }} DA</span>
+                                    <button onclick="removeItem({{ special.id }}, 'special')" class="ml-auto text-red-500 hover:text-red-400 transition">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Order Summary -->
+            <div class="lg:col-span-1">
+                <div class="bg-gray-900 rounded-2xl p-6 border-2 border-yellow-500 sticky top-24">
+                    <h2 class="text-2xl font-bold text-white mb-6">Récapitulatif</h2>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between text-gray-300">
+                            <span>Sous-total:</span>
+                            <span id="subtotal">{{ cart_total|floatformat:0 }} DA</span>
+                        </div>
+                        <div class="flex justify-between text-gray-300">
+                            <span>Livraison:</span>
+                            <span class="text-green-500">Gratuite</span>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-gray-800 pt-4 mb-6">
+                        <div class="flex justify-between items-center">
+                            <span class="text-white text-xl font-bold">Total:</span>
+                            <span class="text-yellow-500 text-3xl font-bold"><span id="total">{{ cart_total|floatformat:0 }}</span> DA</span>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'restaurant:checkout' %}" class="block w-full bg-yellow-500 text-black text-center py-4 rounded-xl font-bold hover:bg-yellow-400 transition shadow-lg hover:shadow-yellow-500/50 mb-3">
+                        <i class="fas fa-check mr-2"></i>Finaliser la Commande
+                    </a>
+                    
+                    <a href="{% url 'restaurant:order' %}" class="block w-full bg-gray-800 text-white text-center py-3 rounded-xl font-semibold hover:bg-gray-700 transition">
+                        <i class="fas fa-arrow-left mr-2"></i>Continuer mes achats
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+function updateQuantity(itemId, type, quantity) {
+    if (quantity < 1) return;
+    
+    const formData = new FormData();
+    formData.append('item_id', itemId);
+    formData.append('quantity', quantity);
+    formData.append('type', type);
+    
+    fetch("{% url 'restaurant:update_cart' %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+
+function removeItem(itemId, type) {
+    if (!confirm('Êtes-vous sûr de vouloir retirer cet article ?')) return;
+    
+    const formData = new FormData();
+    formData.append('item_id', itemId);
+    formData.append('type', type);
+    
+    fetch("{% url 'restaurant:remove_from_cart' %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+</script>
+{% endblock %}
