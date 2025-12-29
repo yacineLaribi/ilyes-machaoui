@@ -204,7 +204,7 @@ document.getElementById('checkout-form').addEventListener('submit', function(e) 
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            window.location.href = `/confirmation/${data.order_id}/`;
+            window.location.href = `/restaurant/confirmation/${data.order_id}/`;
         } else {
             alert('Erreur: ' + data.message);
             submitBtn.disabled = false;
