@@ -20,13 +20,13 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
-                <div class="flex items-center space-x-4">
+                <a href="{% url 'core:home' %}" class="flex items-center space-x-4">
                     <img src="{% static 'logo.png' %}" alt="N1 Grillade Ilyes" class="h-24 object-contain">
 
                     <span class="text-white font-semibold text-sm uppercase tracking-wider">
                         Number One Grillades Ilyes
                     </span>
-                </div>
+                </a>
 
                 <!-- Order Button & Menu Items -->
                 <div class="hidden md:flex items-center space-x-8">
@@ -41,9 +41,9 @@
 
                 <!-- Right Side Icons -->
                 <div class="flex items-center space-x-4">
-                    <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:bg-gray-200 transition">
+                    <button class="w-10 h-10 bg-white rounded-full cursor-pointer flex items-center justify-center hover:bg-gray-200 transition">
                         {% comment %} <i class="text-black fa-solid fa-basket-shopping"></i> {% endcomment %}
-                        <i class="fa-solid fa-burger text-black"></i>
+                        <i class="fas fa-shopping-cart text-black"></i>
                     </button>
                 </div>
 
