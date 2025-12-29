@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Number One Grillade Ilyes{% endblock %}</title>
+<!-- Tailwind CSS v4 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="https://www.google.com/search?q=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+@import url('https://www.google.com/search?q=https://fonts.googleapis.com/css2%3Ffamily%3DPlayfair%2BDisplay:wght%40700%26family%3DInter:wght%40300%3B400%3B600%26display%3Dswap');
+
+    @theme {
+        --font-heading: "Playfair Display", serif;
+        --font-body: "Inter", sans-serif;
+    }
+
+    body { 
+        font-family: var(--font-body); 
+    }
+    
+    .font-heading { 
+        font-family: var(--font-heading); 
+    }
+</style>
+
+
+</head>
+<body class="bg-stone-800 text-gray-200 overflow-x-hidden">
+<!-- Header -->
+<header class="fixed top-0 w-full z-50 bg-stone/90 backdrop-blur-md">
+<nav class="container mx-auto px-6 py-4 flex items-center justify-between">
+<!-- Logo -->
+<div class="text-xl font-bold flex items-center gap-2">
+    <span class="h-auto">
+        <img src="{% static 'logo.png' %}" alt="N1 Grillade Ilyes" class="h-24 object-contain">
+
+    </span>
+<span class="">NUMBER ONE GRILLADE ILYES</span>
+</div>
+
+        <!-- Navigation Links -->
+        <ul class="hidden lg:flex space-x-8 font-medium text-sm uppercase tracking-wide">
+            <li><a href="#home" class="hover:text-red-700 transition">Accueil</a></li>
+            <li><a href="#about" class="hover:text-red-700 transition">Héritage</a></li>
+            <li><a href="#menu" class="hover:text-red-700 transition">Menu</a></li>
+            <li><a href="#testimonials" class="hover:text-red-700 transition">Avis</a></li>
+            <li><a href="#contact" class="hover:text-red-700 transition">Contact</a></li>
+        </ul>
+
+        <!-- Language & Order -->
+        <div class="flex items-center gap-4">
+            <span class="text-xs font-bold border-r pr-4 border-gray-300">ENG</span>
+            <a href="#order" class="bg-red-700 text-stone px-5 py-2 rounded-full text-sm font-bold hover:bg-red-800 transition shadow-sm">Commander</a>
+        </div>
+    </nav>
+</header>
+
+<main class="pt-16">
+    {% block content %}
+    {% endblock %}
+</main>
+
+
+</body>
+</html>

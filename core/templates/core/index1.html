@@ -1,0 +1,182 @@
+{% extends "base1.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Hero Section -->
+
+<section id="home" class="relative min-h-[80vh] flex items-center bg-stone-800 overflow-hidden">
+<div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+<div class="space-y-6 relative z-10">
+<span class="inline-block px-4 py-1 bg-red-700/30 text-red-400 rounded-full text-xs font-bold uppercase tracking-widest">Depuis 1996</span>
+<h1 class="text-6xl lg:text-8xl font-heading leading-none">Le goût authentique qui rassemble</h1>
+<p class="text-xl text-gray-300 max-w-md">L'art des grillades : Traditionnel, frais, et une qualité inégalée depuis plus de 25 ans.</p>
+<div class="flex flex-wrap gap-4">
+<button class="bg-red-700 text-white px-8 py-4 rounded-full font-bold hover:shadow-xl transition flex items-center gap-2">
+Commander <i class="fa-solid fa-fire"></i>
+</button>
+<button class="border border-gray-300 px-8 py-4 rounded-full font-bold hover:bg-gray-50 transition">Notre Menu</button>
+</div>
+</div>
+<div class="relative">
+<div class="w-full h-[500px] bg-stone-200 rounded-3xl overflow-hidden shadow-2xl rotate-3">
+<img src="{% static 'images/ilyes-restau-1.png' %}" alt="Grillades Signature" class="w-full h-full object-cover">
+</div>
+<!-- Floating Badge -->
+<div class="absolute -bottom-6 -left-6 p-6 rounded-2xl shadow-xl max-w-[200px]">
+<p class="text-sm font-bold text-red-700 mb-1 italic">Fast Delivery</p>
+<p class="text-xs text-gray-200 leading-tight">Profitez de nos saveurs où que vous soyez.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Values Strip -->
+
+<div class="bg-red-700 text-white py-6 overflow-hidden">
+<div class="flex gap-12 whitespace-nowrap animate-marquee font-bold uppercase tracking-widest text-sm">
+<span>Traditionnel</span><span>•</span><span>Frais</span><span>•</span><span>Qualité</span><span>•</span><span>Variété</span><span>•</span><span>Expérience</span><span>•</span><span>Accueil</span>
+<span>•</span><span>Traditionnel</span><span>•</span><span>Frais</span><span>•</span><span>Qualité</span><span>•</span><span>Variété</span><span>•</span><span>Expérience</span><span>•</span><span>Accueil</span>
+</div>
+</div>
+
+<!-- About Section -->
+
+<section id="about" class="py-24">
+<div class="container mx-auto px-6 flex flex-col md:flex-row gap-16 items-center">
+<div class="md:w-1/2">
+<div class="grid grid-cols-2 gap-4">
+<div class="h-64 bg-stone-100 rounded-2xl"></div>
+<div class="h-64 bg-stone-100 rounded-2xl mt-8"></div>
+</div>
+</div>
+<div class="md:w-1/2 space-y-6">
+<h2 class="text-4xl font-heading">Number one Grillade Ilyes ?</h2>
+<p class="text-gray-600 leading-relaxed text-lg">
+Situé à Oran, Number One Grillade Ilyes est une adresse incontournable depuis 1996. Né d'une passion familiale pour les saveurs grillées à la flamme, notre restaurant propose un voyage culinaire où tradition et modernité se rencontrent. Ici, le client est un invité de marque, chaque plat témoignant d'un savoir-faire transmis depuis plus de 25 ans.
+</p>
+<div class="flex items-center gap-4 text-red-700 font-bold">
+<span class="text-5xl">25+</span>
+<span class="text-sm uppercase leading-tight">Ans de
+
+
+
+Passion Culinaire</span>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Testimonials -->
+
+<section id="testimonials" class="py-24">
+<div class="container mx-auto px-6">
+<div class="text-center mb-16">
+<h2 class="text-4xl font-heading mb-4">Ce que disent nos clients</h2>
+<div class="w-24 h-1 bg-red-700 mx-auto"></div>
+</div>
+<div class="grid md:grid-cols-2 gap-8">
+<!-- Testimonial 1 -->
+<div class="p-10 rounded-3xl shadow-sm border border-gray-100">
+<div class="flex text-yellow-400 gap-1 mb-6">
+<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+</div>
+<p class="text-gray-700 italic mb-8">"L'art des grillades à son apogée. Chaque visite est une expérience incomparable, fiable et toujours frais."</p>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-stone-200 rounded-full"></div>
+<div>
+<p class="font-bold">Laribi Yacine</p>
+<p class="text-xs text-gray-500 uppercase">Client Fidèle</p>
+</div>
+</div>
+</div>
+<!-- Testimonial 2 -->
+<div class="p-10 rounded-3xl shadow-sm border border-gray-100">
+<div class="flex text-yellow-400 gap-1 mb-6">
+<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+</div>
+<p class="text-gray-700 italic mb-8">"Une adresse incontournable à Oran. Le goût authentique qui rassemble vraiment toute la famille."</p>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-stone-200 rounded-full"></div>
+<div>
+<p class="font-bold">Aizi Belkacem</p>
+<p class="text-xs text-gray-500 uppercase">Web Dev | Medical Student</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Footer -->
+
+<footer id="contact" class="bg-stone-900 text-white pt-20 pb-10">
+<div class="container mx-auto px-6">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+<div class="space-y-6">
+<div class="text-2xl font-bold flex items-center gap-2">
+<span class="bg-red-700 text-white p-1 rounded">N1</span>
+<span class="tracking-tighter">GRILLADE ILYES</span>
+</div>
+<p class="text-stone-400 text-sm leading-relaxed">
+L'art des grillades et l'excellence du service à Oran. Rejoignez notre communauté.
+</p>
+<div class="flex gap-4">
+<a href="#" class="w-10 h-10 rounded-full bg-stone-800 flex items-center justify-center hover:bg-red-700 transition"><i class="fa-brands fa-facebook-f"></i></a>
+<a href="#" class="w-10 h-10 rounded-full bg-stone-800 flex items-center justify-center hover:bg-red-700 transition"><i class="fa-brands fa-instagram"></i></a>
+</div>
+</div>
+
+        <div>
+            <h4 class="font-bold mb-6 uppercase text-xs tracking-widest text-red-500">Navigation</h4>
+            <ul class="space-y-4 text-stone-400 text-sm">
+                <li><a href="#" class="hover:text-white transition">FAQ</a></li>
+                <li><a href="#" class="hover:text-white transition">Menu</a></li>
+                <li><a href="#" class="hover:text-white transition">Nos Services</a></li>
+                <li><a href="#" class="hover:text-white transition">À Propos</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <h4 class="font-bold mb-6 uppercase text-xs tracking-widest text-red-500">Contactez-nous</h4>
+            <ul class="space-y-4 text-stone-400 text-sm">
+                <li>Admin : +213 694 68 88 89</li>
+                <li>Commercial : +213 468 99 99 99</li>
+                <li>Email : contact@ilyes-grillade.com</li>
+            </ul>
+        </div>
+
+        <div>
+            <h4 class="font-bold mb-6 uppercase text-xs tracking-widest text-red-500">Localisation</h4>
+            <p class="text-stone-400 text-sm mb-4">Es Senia, Oran, Algeria</p>
+            <div class="w-full h-32 bg-stone-800 rounded-xl overflow-hidden flex items-center justify-center text-stone-600 text-xs italic">
+                Mini Map Oran
+            </div>
+        </div>
+    </div>
+
+    <div class="border-t border-stone-800 pt-10 flex flex-col md:flex-row justify-between items-center text-xs text-stone-500 gap-6">
+        <p>© 2025 Number One Grillade Ilyes. Design by Agrobiosmart.</p>
+        <div class="flex gap-8">
+            <a href="#" class="hover:text-white">Confidentialité</a>
+            <a href="#" class="hover:text-white">Conditions</a>
+            <a href="#" class="hover:text-white">Cookies</a>
+        </div>
+    </div>
+</div>
+
+
+</footer>
+
+<style>
+@keyframes marquee {
+0% { transform: translateX(0); }
+100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+animation: marquee 20s linear infinite;
+display: flex;
+width: 200%;
+}
+</style>
+
+{% endblock %}

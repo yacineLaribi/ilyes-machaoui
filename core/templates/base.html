@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Grillade Ilyes - Number One Grillade{% endblock %}</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .font-marcellus {
+            font-family: 'Marcellus', serif;
+        }
+    </style>
+</head>
+<body class="bg-black relative  font-marcellus  text-white">
+    <!-- Navigation -->
+    <nav class="bg-black/30 fixed w-full top-0 z-50 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center space-x-4">
+                    <img src="{% static 'logo.png' %}" alt="N1 Grillade Ilyes" class="h-24 object-contain">
+
+                    <span class="text-white font-semibold text-sm uppercase tracking-wider">
+                        Number One Grillades Ilyes
+                    </span>
+                </div>
+
+                <!-- Order Button & Menu Items -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <button class="bg-white text-black px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-200 transition">
+                       Commander
+                    </button>
+                    <a href="{% url 'restaurant:menu' %}" class="text-white hover:text-yellow-500 transition">Menu</a>
+                    <a href="#actualites" class="text-white hover:text-yellow-500 transition">Actualités</a>
+                    <a href="#legacy" class="text-white hover:text-yellow-500 transition">Héritage</a>
+                    <a href="#location" class="text-white hover:text-yellow-500 transition">Location</a>
+                </div>
+
+                <!-- Right Side Icons -->
+                <div class="flex items-center space-x-4">
+                    <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:bg-gray-200 transition">
+                        {% comment %} <i class="text-black fa-solid fa-basket-shopping"></i> {% endcomment %}
+                        <i class="fa-solid fa-burger text-black"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+
+            <div class="mt-8">
+                <img src="{% static 'images/footer-img.jpg' %}" alt="Footer" class="w-full">
+            </div>
+                        <!-- Copyright -->
+            <div class="bg-yellow-500/80  px-16 py-2 border-t border-gray-800 text-center text-sm text-black">
+                <div class="flex justify-between items-center flex-wrap gap-4">
+                    <span>© 1996-2026 Mechaoui Ilyes. All rights reserved.</span>
+                    <div class="flex space-x-6">
+                        <a href="#" class="hover:text-white transition">Privacy policy</a>
+                        <a href="#" class="hover:text-white transition">Terms of service</a>
+                    </div>
+                </div>
+            </div>
+</body>
+</html>
