@@ -74,7 +74,7 @@
                             <input type="number" 
                                    id="quantity-{{ ingredient.id }}" 
                                    min="1" 
-                                   max="5" 
+                                   max="50" 
                                    value="1" 
                                    class="w-16 text-center bg-gray-700 text-white rounded-lg py-1 focus:ring-2 focus:ring-yellow-500">
                             <button type="button" onclick="increaseQuantity({{ ingredient.id }})" class="bg-gray-700 text-white w-8 h-8 rounded-lg hover:bg-gray-600 transition">+</button>
@@ -143,7 +143,7 @@ const basePrice = {{ special_meal.base_price }};
 
 function increaseQuantity(ingredientId) {
     const input = document.getElementById(`quantity-${ingredientId}`);
-    if (parseInt(input.value) < parseInt(input.max)) {
+    if (parseInt(input.value) < 50) {
         input.value = parseInt(input.value) + 1;
         updateTotal();
     }
