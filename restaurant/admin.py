@@ -106,7 +106,9 @@ class OrderAdmin(admin.ModelAdmin):
         'id',
         'customer_phone',
         'customer_name',
-        'order_summary',   # 👈 new column here
+        'customer_address',
+        'order_summary',   
+        'additional_notes',
         'total_price',
         'status',
         'created_at'
