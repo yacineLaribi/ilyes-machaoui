@@ -137,9 +137,10 @@ class OrderAdmin(admin.ModelAdmin):
             )
 
             if ingredients:
+                notes_text = f" (Note: {sm.notes})" if sm.notes else ""
                 special_lines.append(
                     f"{sm.quantity}x {sm.special_meal.name} "
-                    f"[{ingredients}]"
+                    f"[{ingredients}]{notes_text}"
                 )
             else:
                 special_lines.append(
