@@ -4,14 +4,13 @@
 
 {% block content %}
 <!-- Hero Section -->
-<section class="relative mb-0 -top-20 w-full h-[50vh] bg-cover bg-center" style="background-image: url('{% static 'images/ilyes-restau-2.jpg' %}'); background-position:0 -700px;">
-    <div class="absolute inset-0 h-full w-full bg-black/70"></div>
+<section class="relative mb-0 w-full h-[30vh] md:h-[50vh] bg-cover bg-center bg-[position:center] md:bg-[position:center_-700px]" style="background-image: url('{% static 'images/ilyes-restau-2.jpg' %}');">    <div class="absolute inset-0 h-full w-full bg-black/70"></div>
     <div class="relative h-full flex flex-col justify-center items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <p class="text-yellow-500 text-xl md:text-2xl font-marcellus mb-4">COMMANDEZ EN LIGNE</p>
-        <h1 class="text-5xl md:text-7xl font-bold text-white font-marcellus mb-6 leading-tight">
+        <p class="text-yellow-500 text-lg md:text-2xl font-marcellus mb-2 md:mb-4">COMMANDEZ EN LIGNE</p>
+        <h1 class="text-3xl md:text-7xl font-bold text-white font-marcellus mb-3 md:mb-6 leading-tight">
             PASSER COMMANDE
         </h1>
-        <p class="text-white text-lg md:text-xl font-light max-w-2xl">
+        <p class="text-white text-sm md:text-xl font-light max-w-2xl">
             Composez votre repas selon vos envies
         </p>
     </div>
@@ -20,7 +19,7 @@
 <!-- Cart Summary Bar -->
 <div class="sticky top-20 z-40 bg-yellow-500 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center flex-col md:flex-row gap-2 md:gap-auto">
             <div class="flex items-center gap-4">
                 <i class="fas fa-shopping-cart text-black text-2xl"></i>
                 <div>
@@ -29,11 +28,11 @@
                 </div>
             </div>
             <div class="flex gap-3">
-                <a href="{% url 'restaurant:cart' %}" class="bg-black text-white px-6 py-3 rounded-full font-semibold hover:bg-gray-800 transition">
-                    <i class="fas fa-eye mr-2"></i>Voir le Panier
+                <a href="{% url 'restaurant:cart' %}" class="bg-black flex items-center justify-center gap-2 text-white px-6 py-3 rounded-full font-semibold hover:bg-gray-800 transition">
+                    <i class="fas fa-eye mr-2"></i> <p>Panier</p>
                 </a>
-                <a href="{% url 'restaurant:checkout' %}" class="bg-white text-black px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition">
-                    <i class="fas fa-check mr-2"></i>Commander
+                <a href="{% url 'restaurant:checkout' %}" class="bg-white flex items-center justify-center gap-2 text-black px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition">
+                    <i class="fas fa-check mr-2"></i> <p>Commander</p>
                 </a>
             </div>
         </div>
