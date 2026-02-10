@@ -37,20 +37,18 @@
                         Number One Grillades Ilyes
                     </span>
                 </a>
-
-                <!-- Order Button & Menu Items (Desktop) -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="{% url 'restaurant:order' %}" class="bg-white text-black px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-200 transition">
-                       Commander
-                    </a>
-                    <a href="{% url 'restaurant:menu' %}" class="text-white hover:text-yellow-500 transition">Menu</a>
-                    <a href="#actualites" class="text-white hover:text-yellow-500 transition">Actualités</a>
-                    <a href="#legacy" class="text-white hover:text-yellow-500 transition">Héritage</a>
-                    <a href="#location" class="text-white hover:text-yellow-500 transition">Location</a>
-                </div>
-
+                
                 <!-- Right Side Icons -->
                 <div class="flex items-center space-x-4">
+                    <!-- Order Button & Menu Items (Desktop) -->
+                    <div class="hidden md:flex items-center space-x-8">
+                        <a href="{% url 'restaurant:order' %}" class="bg-white text-black px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-200 transition">
+                           Commander
+                        </a>
+                        <a href="{% url 'restaurant:menu' %}" class="text-white hover:text-yellow-500 transition">Menu</a>
+                        <a href="#legacy" class="text-white hover:text-yellow-500 transition">Héritage</a>
+                        <a href="#location" class="text-white hover:text-yellow-500 transition">Location</a>
+                    </div>
                     <a href="{% url 'restaurant:cart' %}" class="relative w-10 h-10 bg-white rounded-full cursor-pointer flex items-center justify-center hover:bg-gray-200 transition">
                         <i class="fas fa-shopping-cart text-black"></i>
                         <!-- Cart Badge (optional - you can add this dynamically) -->
