@@ -23,9 +23,114 @@
         .mobile-menu.open {
             max-height: 500px;
         }
+
+        /* Toast notification animation */
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutUp {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+        }
+
+        .toast-enter {
+            animation: slideInDown 0.3s ease-out;
+        }
+
+        .toast-exit {
+            animation: slideOutUp 0.3s ease-in;
+        }
+
+        /* Modal animation */
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: scale(0.9) translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        #feedback-modal.flex > div {
+            animation: modalSlideIn 0.3s ease-out;
+        }
     </style>
 </head>
 <body class="bg-black relative font-marcellus text-white">
+    <!-- Django Messages Toast Notifications -->
+    {% if messages %}
+    <div id="toast-container" class="fixed top-24 right-4 z-50 space-y-2">
+        {% for message in messages %}
+        <div class="toast-enter max-w-md bg-gray-900 border-l-4 
+                    {% if message.tags == 'success' %}border-green-500
+                    {% elif message.tags == 'error' %}border-red-500
+                    {% elif message.tags == 'warning' %}border-yellow-500
+                    {% else %}border-blue-500{% endif %}
+                    rounded-lg shadow-2xl p-4 flex items-start gap-3 backdrop-blur-sm"
+             data-message-id="{{ forloop.counter }}">
+            
+            <!-- Icon -->
+            <div class="flex-shrink-0">
+                {% if message.tags == 'success' %}
+                <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                {% elif message.tags == 'error' %}
+                <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                {% elif message.tags == 'warning' %}
+                <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+                {% else %}
+                <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                {% endif %}
+            </div>
+            
+            <!-- Message Content -->
+            <div class="flex-1">
+                <p class="text-white text-sm font-medium">{{ message }}</p>
+            </div>
+            
+            <!-- Close Button -->
+            <button onclick="dismissToast(this)" class="flex-shrink-0 text-gray-400 hover:text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <!-- Navigation -->
     <nav class="bg-black/30 fixed w-full top-0 z-50 border-b border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,8 +141,7 @@
                     <span class="text-white font-semibold text-sm uppercase tracking-wider hidden sm:block">
                         Number One Grillades Ilyes
                     </span>
-                </a>
-                
+                </a>      
                 <!-- Right Side Icons -->
                 <div class="flex items-center space-x-4">
                     <!-- Order Button & Menu Items (Desktop) -->
@@ -48,10 +152,10 @@
                         <a href="{% url 'restaurant:menu' %}" class="text-white hover:text-yellow-500 transition">Menu</a>
                         <a href="#legacy" class="text-white hover:text-yellow-500 transition">Héritage</a>
                         <a href="#location" class="text-white hover:text-yellow-500 transition">Location</a>
+                        <button id="feedback-btn-desktop" class="text-white hover:text-yellow-500 transition">Feedback</button>
                     </div>
                     <a href="{% url 'restaurant:cart' %}" class="relative w-10 h-10 bg-white rounded-full cursor-pointer flex items-center justify-center hover:bg-gray-200 transition">
                         <i class="fas fa-shopping-cart text-black"></i>
-                        <!-- Cart Badge (optional - you can add this dynamically) -->
                         <span class="absolute -top-2 -right-2 bg-yellow-500 text-black text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center" id="cart-badge" style="display: none;">0</span>
                     </a>
 
@@ -77,10 +181,112 @@
                     <a href="#actualites" class="block text-white hover:text-yellow-500 transition px-4 py-2">Actualités</a>
                     <a href="#legacy" class="block text-white hover:text-yellow-500 transition px-4 py-2">Héritage</a>
                     <a href="#location" class="block text-white hover:text-yellow-500 transition px-4 py-2">Location</a>
+                    <button id="feedback-btn-mobile" class="block text-white hover:text-yellow-500 transition px-4 py-2 w-full text-left">Feedback</button>
                 </div>
             </div>
         </div>
     </nav>
+
+    <!-- Feedback Modal -->
+    <div id="feedback-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-800 shadow-2xl">
+            <!-- Modal Header -->
+            <div class="sticky top-0 bg-gray-900 border-b border-gray-800 px-6 py-4 flex items-center justify-between z-10">
+                <h2 class="text-2xl font-bold text-white">Votre Avis Compte</h2>
+                <button id="close-modal" class="text-gray-400 hover:text-white transition p-2 hover:bg-gray-800 rounded-full">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6">
+                <p class="text-gray-400 mb-6 text-center">Partagez votre expérience chez Number One Grillades Ilyes</p>
+                
+                <!-- Feedback Form -->
+                <form method="POST" action="{% url 'core:submit_form' %}" id="feedback-form">
+                    {% csrf_token %}
+                    <div class="space-y-5">
+                        <!-- Name Field -->
+                        <div>
+                            <label for="modal-name" class="block text-white text-sm font-semibold mb-2">Nom Complet</label>
+                            <input 
+                                type="text" 
+                                id="modal-name" 
+                                name="name" 
+                                required
+                                class="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 transition"
+                                placeholder="Votre nom">
+                        </div>
+
+                        <!-- Email Field -->
+                        <div>
+                            <label for="modal-email" class="block text-white text-sm font-semibold mb-2">Email</label>
+                            <input 
+                                type="email" 
+                                id="modal-email" 
+                                name="email" 
+                                required
+                                class="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 transition"
+                                placeholder="votre.email@exemple.com">
+                        </div>
+
+                        <!-- Rating Field -->
+                        <div>
+                            <label class="block text-white text-sm font-semibold mb-3">Évaluation</label>
+                            <div class="flex items-center space-x-2">
+                                <div class="flex space-x-1" id="modal-star-rating">
+                                    <input type="radio" name="rating" value="1" id="modal-star1" class="hidden" required>
+                                    <label for="modal-star1" class="cursor-pointer text-3xl text-gray-600 hover:text-yellow-500 transition" data-value="1">★</label>
+                                    
+                                    <input type="radio" name="rating" value="2" id="modal-star2" class="hidden">
+                                    <label for="modal-star2" class="cursor-pointer text-3xl text-gray-600 hover:text-yellow-500 transition" data-value="2">★</label>
+                                    
+                                    <input type="radio" name="rating" value="3" id="modal-star3" class="hidden">
+                                    <label for="modal-star3" class="cursor-pointer text-3xl text-gray-600 hover:text-yellow-500 transition" data-value="3">★</label>
+                                    
+                                    <input type="radio" name="rating" value="4" id="modal-star4" class="hidden">
+                                    <label for="modal-star4" class="cursor-pointer text-3xl text-gray-600 hover:text-yellow-500 transition" data-value="4">★</label>
+                                    
+                                    <input type="radio" name="rating" value="5" id="modal-star5" class="hidden">
+                                    <label for="modal-star5" class="cursor-pointer text-3xl text-gray-600 hover:text-yellow-500 transition" data-value="5">★</label>
+                                </div>
+                                <span class="text-gray-400 text-sm ml-2" id="modal-rating-text">Sélectionnez une note</span>
+                            </div>
+                        </div>
+
+                        <!-- Message Field -->
+                        <div>
+                            <label for="modal-message" class="block text-white text-sm font-semibold mb-2">Votre Message</label>
+                            <textarea 
+                                id="modal-message" 
+                                name="message" 
+                                rows="4" 
+                                required
+                                class="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 transition resize-none"
+                                placeholder="Partagez votre expérience avec nous..."></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex gap-3 pt-2">
+                            <button 
+                                type="button"
+                                id="cancel-btn"
+                                class="flex-1 bg-gray-800 text-white font-semibold px-6 py-3 rounded-lg hover:bg-gray-700 transition">
+                                Annuler
+                            </button>
+                            <button 
+                                type="submit"
+                                class="flex-1 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold px-6 py-3 rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition transform hover:scale-105 duration-200">
+                                Envoyer
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <main class="pt-20">
@@ -99,6 +305,7 @@
             <div class="flex space-x-6">
                 <a href="#" class="hover:text-white transition">Privacy policy</a>
                 <a href="#" class="hover:text-white transition">Terms of service</a>
+                <button id="feedback-btn-footer" class="hover:text-white transition">Feedback</button>
             </div>
         </div>
     </div>
@@ -125,6 +332,147 @@
                 closeIcon.classList.add('hidden');
             });
         });
+
+        // Toast notification auto-dismiss
+        function dismissToast(button) {
+            const toast = button.closest('[data-message-id]');
+            toast.classList.remove('toast-enter');
+            toast.classList.add('toast-exit');
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }
+
+        // Auto-dismiss toasts after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const toasts = document.querySelectorAll('[data-message-id]');
+            toasts.forEach(toast => {
+                setTimeout(() => {
+                    const closeBtn = toast.querySelector('button');
+                    if (closeBtn) dismissToast(closeBtn);
+                }, 5000);
+            });
+        });
+
+        // Feedback Modal Functionality
+        const feedbackModal = document.getElementById('feedback-modal');
+        const closeFeedbackModal = document.getElementById('close-modal');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const feedbackBtnDesktop = document.getElementById('feedback-btn-desktop');
+        const feedbackBtnMobile = document.getElementById('feedback-btn-mobile');
+        const feedbackBtnFooter = document.getElementById('feedback-btn-footer');
+
+        // Open modal function
+        function openFeedbackModal() {
+            feedbackModal.classList.remove('hidden');
+            feedbackModal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close modal function
+        function closeFeedbackModalFunc() {
+            feedbackModal.classList.add('hidden');
+            feedbackModal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+            // Reset form
+            document.getElementById('feedback-form').reset();
+            resetStars();
+        }
+
+        // Event listeners for opening modal
+        if (feedbackBtnDesktop) {
+            feedbackBtnDesktop.addEventListener('click', openFeedbackModal);
+        }
+        if (feedbackBtnMobile) {
+            feedbackBtnMobile.addEventListener('click', () => {
+                openFeedbackModal();
+                // Close mobile menu
+                mobileMenu.classList.remove('open');
+                menuIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+            });
+        }
+        if (feedbackBtnFooter) {
+            feedbackBtnFooter.addEventListener('click', openFeedbackModal);
+        }
+        
+        // Also listen for dynamically loaded footer buttons
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'feedback-btn-footer-services') {
+                openFeedbackModal();
+            }
+        });
+
+        // Event listeners for closing modal
+        closeFeedbackModal.addEventListener('click', closeFeedbackModalFunc);
+        cancelBtn.addEventListener('click', closeFeedbackModalFunc);
+
+        // Close modal when clicking outside
+        feedbackModal.addEventListener('click', function(e) {
+            if (e.target === feedbackModal) {
+                closeFeedbackModalFunc();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !feedbackModal.classList.contains('hidden')) {
+                closeFeedbackModalFunc();
+            }
+        });
+
+        // Modal Star rating functionality
+        const modalStarRating = document.getElementById('modal-star-rating');
+        const modalRatingText = document.getElementById('modal-rating-text');
+        const modalStarLabels = modalStarRating.querySelectorAll('label');
+        const modalStarInputs = modalStarRating.querySelectorAll('input');
+
+        let modalSelectedRating = 0;
+
+        modalStarLabels.forEach((label, index) => {
+            label.addEventListener('mouseenter', () => {
+                highlightModalStars(index + 1);
+            });
+
+            label.addEventListener('click', () => {
+                modalSelectedRating = index + 1;
+                modalStarInputs[index].checked = true;
+                updateModalRatingText(modalSelectedRating);
+            });
+        });
+
+        modalStarRating.addEventListener('mouseleave', () => {
+            highlightModalStars(modalSelectedRating);
+        });
+
+        function highlightModalStars(count) {
+            modalStarLabels.forEach((label, index) => {
+                if (index < count) {
+                    label.classList.remove('text-gray-600');
+                    label.classList.add('text-yellow-500');
+                } else {
+                    label.classList.remove('text-yellow-500');
+                    label.classList.add('text-gray-600');
+                }
+            });
+        }
+
+        function updateModalRatingText(rating) {
+            const ratingTexts = {
+                1: 'Décevant',
+                2: 'Moyen',
+                3: 'Bien',
+                4: 'Très bien',
+                5: 'Excellent!'
+            };
+            modalRatingText.textContent = ratingTexts[rating] || 'Sélectionnez une note';
+        }
+
+        function resetStars() {
+            modalSelectedRating = 0;
+            highlightModalStars(0);
+            updateModalRatingText(0);
+        }
     </script>
 </body>
 </html>
