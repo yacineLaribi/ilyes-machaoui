@@ -121,7 +121,7 @@ class Order(models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     additional_notes = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    
+    delivery_person = models.ForeignKey('auth.User', on_delete=models.SET_NULL, blank=True, null=True, related_name='deliveries')
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

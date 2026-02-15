@@ -102,6 +102,8 @@ class OrderSpecialMealInline(admin.StackedInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
+    save_on_top = True   
+
     list_display = [
         'id',
         'customer_phone',
@@ -110,13 +112,15 @@ class OrderAdmin(admin.ModelAdmin):
         'order_summary',   
         'additional_notes',
         'total_price',
+        'delivery_person',
         'status',
         'created_at'
     ]
-    list_filter = ['status', 'created_at']
+    list_filter = ['delivery_person','status', 'created_at']
     search_fields = ['customer_phone', 'customer_name', 'id']
     readonly_fields = ['created_at', 'updated_at']
-    list_editable = ['status']
+    list_editable = ['delivery_person','status']
+
     inlines = [OrderItemInline, OrderSpecialMealInline]
 
 
